@@ -312,9 +312,6 @@ def get_cache_dir(env=None):
     return val
 
 
-# TODO: Define get git dir function
-
-
 def get_use_v1_artifacts(env=None):
     if env is None:
         env = os.environ
