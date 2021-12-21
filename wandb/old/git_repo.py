@@ -22,8 +22,9 @@ class GitRepo(object):
                 self._repo = False
             else:
                 try:
-                    self._repo = Repo(self._root or os.getcwd(),
-                                      search_parent_directories=True)
+                    self._repo = Repo(
+                        self._root or os.getcwd(), search_parent_directories=True
+                    )
                 except exc.InvalidGitRepositoryError:
                     logger.debug("git repository is invalid")
                     self._repo = False

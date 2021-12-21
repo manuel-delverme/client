@@ -78,7 +78,9 @@ class Api(object):
         self._settings = Settings(
             load_settings=load_settings, root_dir=self.default_settings.get("root_dir")
         )
-        self.git = GitRepo(remote=self.settings("git_remote"))
+        self.git = GitRepo(
+            root=self.settings("git_root"), remote=self.settings("git_remote")
+        )
         # Mutable settings set by the _file_stream_api
         self.dynamic_settings = {
             "system_sample_seconds": 2,
@@ -252,6 +254,14 @@ class Api(object):
                         Settings.DEFAULT_SECTION,
                         "ignore_globs",
                         fallback=result.get("ignore_globs"),
+                    ),
+                    env=self._environ,
+                ),
+                "git_root": env.get_git_root(
+                    self._settings.get(
+                        Settings.DEFAULT_SECTION,
+                        "git_root",
+                        fallback=result.get("git_root"),
                     ),
                     env=self._environ,
                 ),
@@ -782,7 +792,11 @@ class Api(object):
 
         response = self.gql(
             query,
-            variable_values={"entity": entity, "project": project_name, "name": name,},
+            variable_values={
+                "entity": entity,
+                "project": project_name,
+                "name": name,
+            },
         )
 
         if "model" not in response or "bucket" not in (response["model"] or {}):
@@ -1478,7 +1492,12 @@ class Api(object):
         assert run, "run must be specified"
         entity = entity or self.settings("entity")
         query_result = self.gql(
-            query, variable_values={"name": project, "run": run, "entity": entity,},
+            query,
+            variable_values={
+                "name": project,
+                "run": run,
+                "entity": entity,
+            },
         )
         if query_result["model"] is None:
             raise CommError("Run does not exist {}/{}/{}.".format(entity, project, run))
@@ -2420,7 +2439,8 @@ class Api(object):
         )
 
     def _resolve_client_id(
-        self, client_id,
+        self,
+        client_id,
     ):
 
         if client_id in self._client_id_mapping:
@@ -2435,7 +2455,12 @@ class Api(object):
             }
         """
         )
-        response = self.gql(query, variable_values={"clientID": client_id,},)
+        response = self.gql(
+            query,
+            variable_values={
+                "clientID": client_id,
+            },
+        )
         server_id = None
         if response is not None:
             client_id_mapping = response.get("clientIDMapping")

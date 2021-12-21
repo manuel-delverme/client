@@ -100,6 +100,7 @@ env_settings: Dict[str, Optional[str]] = dict(
     username=None,
     disable_code=None,
     disable_git=None,
+    git_root=None,
     code_dir=None,
     anonymous=None,
     ignore_globs=None,
@@ -251,6 +252,7 @@ class Settings(object):
     launch_config_path: Optional[str] = None
     resume_fname_spec: Optional[str] = None
     root_dir: Optional[str] = None
+    git_root: Optional[str] = None
     log_dir_spec: Optional[str] = None
     log_user_spec: Optional[str] = None
     log_internal_spec: Optional[str] = None
@@ -367,6 +369,7 @@ class Settings(object):
         _config_dict: Config = None,
         # directories and files
         root_dir: str = None,
+        git_root: str = None,
         settings_system_spec: str = "~/.config/wandb/settings",
         settings_workspace_spec: str = "{wandb_dir}/settings",
         sync_dir_spec: str = "{wandb_dir}/{run_mode}-{timespec}-{run_id}",
@@ -973,6 +976,7 @@ class Settings(object):
             u["save_code"] = wandb.env.should_save_code()
 
         u["disable_git"] = wandb.env.disable_git()
+        u["git_root"] = wandb.env.get_git_root()
 
         # Attempt to get notebook information if not already set by the user
         if self._jupyter and (self.notebook_name is None or self.notebook_name == ""):

@@ -51,6 +51,7 @@ API_KEY = "WANDB_API_KEY"
 JOB_TYPE = "WANDB_JOB_TYPE"
 DISABLE_CODE = "WANDB_DISABLE_CODE"
 DISABLE_GIT = "WANDB_DISABLE_GIT"
+GIT_ROOT = "WANDB_GIT_ROOT"
 SAVE_CODE = "WANDB_SAVE_CODE"
 TAGS = "WANDB_TAGS"
 IGNORE = "WANDB_IGNORE_GLOBS"
@@ -258,6 +259,12 @@ def get_config_paths(default=None, env=None):
     return env.get(CONFIG_PATHS, default)
 
 
+def get_git_root(default=None, env=None):
+    if env is None:
+        env = os.environ
+    return env.get(GIT_ROOT, default)
+
+
 def get_agent_report_interval(default=None, env=None):
     if env is None:
         env = os.environ
@@ -304,6 +311,9 @@ def get_cache_dir(env=None):
         env = os.environ
     val = env.get(CACHE_DIR, default_dir)
     return val
+
+
+# TODO: Define get git dir function
 
 
 def get_use_v1_artifacts(env=None):
