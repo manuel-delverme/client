@@ -116,11 +116,12 @@ class TorchHistory(object):
                     self.log_tensor_stats(data.cpu(), "parameters/" + prefix + name)
 
             log_track_params = log_track_init(log_freq)
-            hook = module.register_forward_hook(
-                lambda mod, inp, outp: parameter_log_hook(
-                    mod, inp, outp, log_track_params
-                )
-            )
+
+            def parameter_log_hook_with_closure(mod, inp, outp):
+                parameter_log_hook(mod, inp, outp, log_track_params)
+
+            hook = module.register_forward_hook(parameter_log_hook_with_closure)
+
             self._hook_handles["parameters/" + prefix] = hook
             module._wandb_hook_names.append("parameters/" + prefix)
 
